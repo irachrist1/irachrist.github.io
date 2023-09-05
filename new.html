@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    
+    <style>
+    body{
+        height: 100vh;
+        width: 100vw;
+        background-color: black;
+        margin: 0rem;
+        overflow: hidden;
+    }
+    #image-track > .image{
+        width: 40vmin;
+        height: 56vmin;
+        object-fit: cover;
+        object-position: 100% 50%;
+    }
+
+    #image-track {
+        display: flex;
+        gap: 4vmin;
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-100%, -50%);
+    }
+    </style>
+</head>
+<body>
+    <div id="image-track" data-mouse-down-at="0" data-prev-percentage="0">
+    <img class="image" src="./images/1.png" alt="" draggable="false" />
+    <img class="image" src="./images/H.png" alt="" draggable="false" />
+    <img class="image" src="./images/Reviews.png" alt="" draggable="false" />
+    <img class="image" src="./images/test PC SCREEN moc.jpg" alt="" draggable="false" />
+    <img class="image" src="./images/vacational gig.jpg" alt="" draggable="false" />
+    <img class="image" src="./images/reducing transapency moc.jpg" alt="" draggable="false" />
+    <img class="image" src="./images/iG pops.jpg" alt="" draggable="false" />
+    <img class="image" src="./images/Before mockup Poster .png" alt="" draggable="false" />
+</div>
+
+<script>
+//step 2 mouse moves
+const track = document.getElementById("image-track");
+
+
+//step 1 mouse down
+
+window.onmousedown = e => {
+    track.dataset.mouseDownAt = e.clientX;
+}
+
+window.onmouseup = () => {
+    track.dataset.mouseDownAt = "0";
+    track.dataset.prevPercentage = track.dataset.percentage;
+}
+
+window.onmousemove = e =>{
+    if(track.dataset.mouseDownAt === "0") return;
+
+    const mouseDelta = parseFloat(track.dataset.mouseDownAt) - e.clientX,
+          maxDelta = window.innerWidth /2;
+
+    const percentage = (mouseDelta / maxDelta) * -100;
+        nextPercentage = parseFloat(track.dataset.prevPercentage) + percentage;
+
+    track.dataset.percentage = nextPercentage;
+
+
+    track.style.transform = 'translate(${percentage}%, -50%)';
+        track.animate({
+            transform: 'translate(${nextPercentage}%, -50%)'
+        }, {duration: 1200, fill: "fowards"});
+
+    Math.min(nextPercentage, 0);
+    Math.max(nextPercentage, -100);
+
+    for(const image of track.getElementsByClassName("image")){
+        image.style.objectPosition = '${nextPercentage + 100} 50%';
+        image.animate({
+            objectPosition: '${100 + nextPercentage}%, center'
+        }, {duration: 1200, fill: "fowards"});
+    }
+}
+</script>
+
+
+</body>
+</html>
+
